@@ -1,0 +1,9 @@
+services:
+  nest-clean-pg:
+    container_name: nest-clean-pg
+    image: postgres
+    env_file: .env.development
+    ports:
+      - $POSTGRES_PORT:5432
+    volumes:
+      - ./data/pg:$PGDATA

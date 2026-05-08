@@ -13,6 +13,11 @@
     "start:prod": "node dist/main",
     "lint": "pnpx @biomejs/biome check",
     "lint:fix": "pnpx @biomejs/biome check --write",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:cov": "vitest run --coverage",
+    "test:debug": "vitest --inspect-brk --inspect --logHeapUsage --threads=false",
+    "test:e2e": "vitest run --config ./vitest.config.e2e.ts",
     "compose:up": "docker compose --env-file .env.development up -d",
     "compose:down": "docker compose --env-file .env.development down"
   },
@@ -37,14 +42,19 @@
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
+    "@swc/core": "^1.15.33",
     "@types/express": "^5.0.0",
     "@types/node": "^24.0.0",
     "@types/passport-jwt": "^4.0.1",
+    "@vitest/coverage-v8": "^4.1.5",
     "dotenv": "^17.4.2",
     "globals": "^17.0.0",
     "prisma": "^7.8.0",
     "source-map-support": "^0.5.21",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "unplugin-swc": "^1.5.9",
+    "vite-tsconfig-paths": "^6.1.1",
+    "vitest": "^4.1.5"
   }
 }

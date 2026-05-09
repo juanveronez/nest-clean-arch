@@ -7,9 +7,9 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "start": "nest start",
-    "start:dev": "nest start --watch",
-    "start:debug": "nest start --debug --watch",
+    "start": "nest start --env-file .env.development",
+    "start:dev": "nest start --env-file .env.development --watch",
+    "start:debug": "nest start --env-file .env.development --debug --watch",
     "start:prod": "node dist/main",
     "lint": "pnpx @biomejs/biome check",
     "lint:fix": "pnpx @biomejs/biome check --write",

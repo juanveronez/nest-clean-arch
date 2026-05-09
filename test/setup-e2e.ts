@@ -20,17 +20,14 @@ function generateUniqueDatabaseUrl(schemaId: string) {
 
 const schemaId = randomUUID()
 
-beforeAll(() => {
-  const databaseUrl = generateUniqueDatabaseUrl(schemaId)
-  process.env.DATABASE_URL = databaseUrl
+const connectionString = generateUniqueDatabaseUrl(schemaId)
+process.env.DATABASE_URL = connectionString
 
-  execSync('pnpm prisma migrate deploy')
-})
+const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString }) })
 
-afterAll(() => {
-  const prisma = new PrismaClient({
-    adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
-  })
-  prisma.$queryRawUnsafe(`DROP SCHEMA IF EXISTS "${schemaId}" CASCADE`)
-  prisma.$disconnect()
+beforeAll(() => execSync('pnpm prisma migrate deploy'))
+
+afterAll(async () => {
+  await prisma.$queryRawUnsafe(`DROP SCHEMA IF EXISTS "${schemaId}" CASCADE`)
+  await prisma.$disconnect()
 })

@@ -13,26 +13,51 @@ datasource db {
   provider = "postgresql"
 }
 
+enum UserRole {
+  STUDENT
+  INSTRUCTOR
+}
+
 model User {
   id        String     @id @default(uuid())
   name      String
   email     String     @unique
   password  String
   questions Question[]
+  answers   Answer[]
+  role      UserRole   @default(STUDENT)
 
   @@map("users")
 }
 
 model Question {
-  id        String   @id @default(uuid())
-  title     String
-  slug      String   @unique
-  content   String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id           String    @id @default(uuid())
+  title        String
+  slug         String    @unique
+  content      String
+  authorId     String    @map("author_id")
+  bestAnswerId String?   @unique @map("best_answer_id")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime? @updatedAt @map("updated_at")
 
-  author   User   @relation(fields: [authorId], references: [id])
-  authorId String @map("author_id")
+  author     User     @relation(fields: [authorId], references: [id])
+  bestAnswer Answer?  @relation(name: "bestAnswer", fields: [bestAnswerId], references: [id])
+  answers    Answer[]
 
   @@map("questions")
+}
+
+model Answer {
+  id         String    @id @default(uuid())
+  content    String
+  authorId   String    @map("author_id")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime? @updatedAt @map("updated_at")
+  questionId String    @map("question_id")
+
+  author       User      @relation(fields: [authorId], references: [id])
+  bestAnswerOn Question? @relation("bestAnswer")
+  question     Question  @relation(fields: [questionId], references: [id])
+
+  @@map("answers")
 }

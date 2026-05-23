@@ -31,7 +31,7 @@ export class AuthenticateStudentUseCase {
       return left(new WrongCredentialsError())
     }
 
-    const isPasswordValid = this.hashComparer.compare(
+    const isPasswordValid = await this.hashComparer.compare(
       password,
       student.password,
     )

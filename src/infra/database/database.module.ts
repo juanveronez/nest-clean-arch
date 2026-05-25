@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common'
 import { QuestionsRepository } from '@/domain/forum/application/repository/questions-repository'
 import { StudentsRepository } from '@/domain/forum/application/repository/students-repository'
+import { EnvService } from '../env/env.service'
 import { PrismaService } from './prisma/prisma.service'
 import { PrismaAnswerAttachmentsRepository } from './prisma/repositories/prisma-answer-attachments-repository'
 import { PrismaAnswerCommentsRepository } from './prisma/repositories/prisma-answer-comments-repository'
@@ -13,6 +14,7 @@ import { PrismaStudentsRepository } from './prisma/repositories/prisma-students-
 
 @Module({
   providers: [
+    EnvService,
     PrismaService,
     PrismaAnswerAttachmentsRepository,
     PrismaAnswerCommentsRepository,

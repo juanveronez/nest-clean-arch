@@ -1,4 +1,9 @@
 import { Module } from '@nestjs/common'
+import { AnswerAttachmentsRepository } from '@/domain/forum/application/repository/answer-attachments-repository'
+import { AnswerCommentsRepository } from '@/domain/forum/application/repository/answer-comments-repository'
+import { AnswersRepository } from '@/domain/forum/application/repository/answers-repository'
+import { QuestionAttachmentsRepository } from '@/domain/forum/application/repository/question-attachments-repository'
+import { QuestionCommentsRepository } from '@/domain/forum/application/repository/question-comments-repository'
 import { QuestionsRepository } from '@/domain/forum/application/repository/questions-repository'
 import { StudentsRepository } from '@/domain/forum/application/repository/students-repository'
 import { EnvService } from '../env/env.service'
@@ -16,23 +21,35 @@ import { PrismaStudentsRepository } from './prisma/repositories/prisma-students-
   providers: [
     EnvService,
     PrismaService,
-    PrismaAnswerAttachmentsRepository,
-    PrismaAnswerCommentsRepository,
-    PrismaAnswersRepository,
+    {
+      provide: AnswerAttachmentsRepository,
+      useClass: PrismaAnswerAttachmentsRepository,
+    },
+    {
+      provide: AnswerCommentsRepository,
+      useClass: PrismaAnswerCommentsRepository,
+    },
+    { provide: AnswersRepository, useClass: PrismaAnswersRepository },
     PrismaNotificationsRepository,
-    PrismaQuestionAttachmentsRepository,
-    PrismaQuestionCommentsRepository,
+    {
+      provide: QuestionAttachmentsRepository,
+      useClass: PrismaQuestionAttachmentsRepository,
+    },
+    {
+      provide: QuestionCommentsRepository,
+      useClass: PrismaQuestionCommentsRepository,
+    },
     { provide: QuestionsRepository, useClass: PrismaQuestionsRepository },
     { provide: StudentsRepository, useClass: PrismaStudentsRepository },
   ],
   exports: [
     PrismaService,
-    PrismaAnswerAttachmentsRepository,
-    PrismaAnswerCommentsRepository,
-    PrismaAnswersRepository,
+    AnswerAttachmentsRepository,
+    AnswerCommentsRepository,
+    AnswersRepository,
     PrismaNotificationsRepository,
-    PrismaQuestionAttachmentsRepository,
-    PrismaQuestionCommentsRepository,
+    QuestionAttachmentsRepository,
+    QuestionCommentsRepository,
     QuestionsRepository,
     StudentsRepository,
   ],

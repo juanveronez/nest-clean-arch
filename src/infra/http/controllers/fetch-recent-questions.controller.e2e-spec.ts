@@ -3,45 +3,45 @@ import { JwtService } from '@nestjs/jwt'
 import { Test } from '@nestjs/testing'
 import request from 'supertest'
 import { AppModule } from '@/infra/app.module'
-import { PrismaService } from '@/infra/database/prisma/prisma.service'
+import { DatabaseModule } from '@/infra/database/database.module'
+import { QuestionFactory } from '@/test/factories/make-question'
+import { StudentFactory } from '@/test/factories/make-student'
 
 describe('Fetch Recent Questions (E2E)', () => {
   let app: INestApplication
-  let prisma: PrismaService
   let jwt: JwtService
+  let studentFactory: StudentFactory
+  let questionFactory: QuestionFactory
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [AppModule, DatabaseModule],
+      providers: [StudentFactory, QuestionFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()
 
-    prisma = moduleRef.get(PrismaService)
     jwt = moduleRef.get(JwtService)
+    studentFactory = moduleRef.get(StudentFactory)
+    questionFactory = moduleRef.get(QuestionFactory)
 
     await app.init()
   })
 
   test('[GET] /questions', async () => {
-    const user = await prisma.user.create({
-      data: {
-        name: 'John Doe',
-        email: 'john.doe@email.com',
-        password: '123456',
-      },
-    })
+    const user = await studentFactory.makePrismaStudent()
 
-    const questionsData = [...Array(30)].map((_, i) => ({
-      title: `title ${i}`,
-      content: `content ${i}`,
-      authorId: user.id,
-      slug: `slug-${i}`,
-    }))
+    await Promise.all(
+      [...Array(30)]
+        .map((_, i) => ({
+          title: `title ${i}`,
+          authorId: user.id,
+          createdAt: new Date(30 - i),
+        }))
+        .map((value) => questionFactory.makePrismaQuestion(value)),
+    )
 
-    await prisma.question.createMany({ data: questionsData })
-
-    const accessToken = jwt.sign({ sub: user.id })
+    const accessToken = jwt.sign({ sub: user.id.toString() })
 
     let response = await request(app.getHttpServer())
       .get('/questions')

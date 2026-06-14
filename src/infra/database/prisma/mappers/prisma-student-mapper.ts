@@ -17,6 +17,7 @@ export class PrismaStudentMapper {
 
   static toPersistence(student: Student): UserUncheckedCreateInput {
     return {
+      id: student.id.toString(),
       name: student.name,
       email: student.email,
       password: student.password,

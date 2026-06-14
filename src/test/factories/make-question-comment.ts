@@ -1,10 +1,12 @@
 import { faker } from '@faker-js/faker'
-
+import { Injectable } from '@nestjs/common'
 import { UniqueEntityId } from '@/core/entities/value-objects/unique-entity-id'
 import {
   QuestionComment,
   QuestionCommentProps,
 } from '@/domain/forum/enterprice/entities/question-comment'
+import { PrismaQuestionCommentMapper } from '@/infra/database/prisma/mappers/prisma-question-comment-mapper'
+import { PrismaService } from '@/infra/database/prisma/prisma.service'
 
 /**
  * Use Factory Pattern to create a question object.
@@ -27,4 +29,21 @@ export function makeQuestionComment(
     },
     id,
   )
+}
+
+@Injectable()
+export class QuestionCommentFactory {
+  constructor(private prisma: PrismaService) {}
+
+  async makePrismaQuestionComment(
+    data: Partial<QuestionCommentProps> = {},
+  ): Promise<QuestionComment> {
+    const questionComment = makeQuestionComment(data)
+
+    await this.prisma.comment.create({
+      data: PrismaQuestionCommentMapper.toPersistence(questionComment),
+    })
+
+    return questionComment
+  }
 }

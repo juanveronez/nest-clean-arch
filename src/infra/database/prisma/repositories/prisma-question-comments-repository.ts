@@ -2,24 +2,46 @@ import { Injectable } from '@nestjs/common'
 import { PaginationParams } from '@/core/repositories/pagination-params'
 import { QuestionCommentsRepository } from '@/domain/forum/application/repository/question-comments-repository'
 import { QuestionComment } from '@/domain/forum/enterprice/entities/question-comment'
+import { PrismaQuestionCommentMapper } from '../mappers/prisma-question-comment-mapper'
+import { PrismaService } from '../prisma.service'
 
 @Injectable()
 export class PrismaQuestionCommentsRepository
   implements QuestionCommentsRepository
 {
-  create(questionComment: QuestionComment): Promise<void> {
-    throw new Error('Method not implemented.')
+  constructor(private prisma: PrismaService) {}
+
+  async create(questionComment: QuestionComment): Promise<void> {
+    const data = PrismaQuestionCommentMapper.toPersistence(questionComment)
+
+    await this.prisma.comment.create({ data })
   }
-  findById(id: string): Promise<QuestionComment | null> {
-    throw new Error('Method not implemented.')
+
+  async findById(id: string): Promise<QuestionComment | null> {
+    const comment = await this.prisma.comment.findUnique({ where: { id } })
+
+    if (!comment) return null
+
+    return PrismaQuestionCommentMapper.toDomain(comment)
   }
-  findManyByQuestionId(
+
+  async findManyByQuestionId(
     questionId: string,
-    params: PaginationParams,
+    { page }: PaginationParams,
   ): Promise<QuestionComment[]> {
-    throw new Error('Method not implemented.')
+    const comments = await this.prisma.comment.findMany({
+      where: { questionId },
+      orderBy: { createdAt: 'desc' },
+      skip: (page - 1) * 20,
+      take: 20,
+    })
+
+    return comments.map(PrismaQuestionCommentMapper.toDomain)
   }
-  delete(questionComment: QuestionComment): Promise<void> {
-    throw new Error('Method not implemented.')
+
+  async delete(questionComment: QuestionComment): Promise<void> {
+    const { id } = PrismaQuestionCommentMapper.toPersistence(questionComment)
+
+    await this.prisma.comment.delete({ where: { id } })
   }
 }

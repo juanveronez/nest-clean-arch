@@ -98,5 +98,13 @@ describe('Fetch Recent Questions (E2E)', () => {
         expect.objectContaining({ title: 'title 29' }),
       ],
     })
+
+    response = await request(app.getHttpServer())
+      .get(`/questions?page=3`)
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send()
+
+    expect(response.statusCode).toBe(200)
+    expect(response.body.questions).toHaveLength(0)
   })
 })

@@ -22,7 +22,7 @@
     "strict": true,
     "strictBindCallApply": true,
     "noFallthroughCasesInSwitch": false,
-    "types": ["node", "vitest/globals"],
+    "types": ["node", "multer", "vitest/globals"],
     "paths": {
       "@/*": ["./src/*"]
     }

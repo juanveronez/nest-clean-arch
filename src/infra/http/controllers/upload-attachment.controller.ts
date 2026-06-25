@@ -27,7 +27,5 @@ export class UploadAttachmentController {
       }),
     )
     file: Express.Multer.File,
-  ) {
-    console.log(file)
-  }
+  ) {}
 }

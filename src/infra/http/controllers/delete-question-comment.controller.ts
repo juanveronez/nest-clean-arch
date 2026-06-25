@@ -21,17 +21,13 @@ export class DeleteQuestionCommentController {
     @Param('id') questionCommentId: string,
     @CurrentUser() user: UserPayload,
   ) {
-    try {
-      const result = await this.deleteQuestionCommentUseCase.execute({
-        questionCommentId,
-        authorId: user.sub,
-      })
+    const result = await this.deleteQuestionCommentUseCase.execute({
+      questionCommentId,
+      authorId: user.sub,
+    })
 
-      if (result.isLeft()) {
-        throw new BadRequestException()
-      }
-    } catch (e) {
-      console.log(e)
+    if (result.isLeft()) {
+      throw new BadRequestException()
     }
   }
 }

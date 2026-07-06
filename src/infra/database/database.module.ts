@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 import { AnswerAttachmentsRepository } from '@/domain/forum/application/repository/answer-attachments-repository'
 import { AnswerCommentsRepository } from '@/domain/forum/application/repository/answer-comments-repository'
 import { AnswersRepository } from '@/domain/forum/application/repository/answers-repository'
+import { AttachmentsRepository } from '@/domain/forum/application/repository/attachments-repository'
 import { QuestionAttachmentsRepository } from '@/domain/forum/application/repository/question-attachments-repository'
 import { QuestionCommentsRepository } from '@/domain/forum/application/repository/question-comments-repository'
 import { QuestionsRepository } from '@/domain/forum/application/repository/questions-repository'
@@ -11,6 +12,7 @@ import { PrismaService } from './prisma/prisma.service'
 import { PrismaAnswerAttachmentsRepository } from './prisma/repositories/prisma-answer-attachments-repository'
 import { PrismaAnswerCommentsRepository } from './prisma/repositories/prisma-answer-comments-repository'
 import { PrismaAnswersRepository } from './prisma/repositories/prisma-answers-repository'
+import { PrismaAttachmentsRepository } from './prisma/repositories/prisma-attachments-repository'
 import { PrismaNotificationsRepository } from './prisma/repositories/prisma-notifications-repository'
 import { PrismaQuestionAttachmentsRepository } from './prisma/repositories/prisma-question-attachments-repository'
 import { PrismaQuestionCommentsRepository } from './prisma/repositories/prisma-question-comments-repository'
@@ -21,6 +23,10 @@ import { PrismaStudentsRepository } from './prisma/repositories/prisma-students-
   providers: [
     EnvService,
     PrismaService,
+    {
+      provide: AttachmentsRepository,
+      useClass: PrismaAttachmentsRepository,
+    },
     {
       provide: AnswerAttachmentsRepository,
       useClass: PrismaAnswerAttachmentsRepository,
@@ -44,6 +50,7 @@ import { PrismaStudentsRepository } from './prisma/repositories/prisma-students-
   ],
   exports: [
     PrismaService,
+    AttachmentsRepository,
     AnswerAttachmentsRepository,
     AnswerCommentsRepository,
     AnswersRepository,

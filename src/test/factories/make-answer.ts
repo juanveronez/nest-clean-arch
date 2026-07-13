@@ -32,7 +32,7 @@ export function makeAnswer(
 export class AnswerFactory {
   constructor(private prisma: PrismaService) {}
 
-  async makePrismaAnswer(data: Partial<AnswerProps> = {}): Promise<Answer> {
+  async make(data: Partial<AnswerProps> = {}): Promise<Answer> {
     const answer = makeAnswer(data)
 
     await this.prisma.answer.create({

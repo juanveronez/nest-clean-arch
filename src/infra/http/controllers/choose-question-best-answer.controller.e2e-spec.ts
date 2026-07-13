@@ -35,11 +35,11 @@ describe('Choose question best answer (E2E)', () => {
   })
 
   test('[PATCH] /answers/:answerId/choose-as-best', async () => {
-    const user = await studentFactory.makePrismaStudent()
-    const question = await questionFactory.makePrismaQuestion({
+    const user = await studentFactory.make()
+    const question = await questionFactory.make({
       authorId: user.id,
     })
-    const answer = await answerFactory.makePrismaAnswer({
+    const answer = await answerFactory.make({
       questionId: question.id,
       authorId: user.id,
     })

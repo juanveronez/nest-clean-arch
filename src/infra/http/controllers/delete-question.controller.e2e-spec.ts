@@ -32,8 +32,8 @@ describe('Delete Question (E2E)', () => {
   })
 
   test('[DELETE] /questions/:id', async () => {
-    const user = await studentFactory.makePrismaStudent()
-    const question = await questionFactory.makePrismaQuestion({
+    const user = await studentFactory.make()
+    const question = await questionFactory.make({
       authorId: user.id,
     })
 

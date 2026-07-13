@@ -32,8 +32,8 @@ describe('Fetch question answers (E2E)', () => {
   })
 
   test('[GET] /questions/:questionId/answers', async () => {
-    const user = await studentFactory.makePrismaStudent()
-    const question = await questionFactory.makePrismaQuestion({
+    const user = await studentFactory.make()
+    const question = await questionFactory.make({
       authorId: user.id,
     })
 
@@ -45,7 +45,7 @@ describe('Fetch question answers (E2E)', () => {
           createdAt: new Date(30 - i),
           content: `Answer ${i}`,
         }))
-        .map((value) => answerFactory.makePrismaAnswer(value)),
+        .map((value) => answerFactory.make(value)),
     )
 
     const accessToken = jwt.sign({ sub: user.id.toString() })

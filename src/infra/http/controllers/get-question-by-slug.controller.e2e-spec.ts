@@ -30,9 +30,9 @@ describe('Get question by slug (E2E)', () => {
   })
 
   test('[GET] /questions/:slug', async () => {
-    const user = await studentFactory.makePrismaStudent()
+    const user = await studentFactory.make()
 
-    await questionFactory.makePrismaQuestion({
+    await questionFactory.make({
       authorId: user.id,
       slug: Slug.create('slug'),
       title: 'Question',

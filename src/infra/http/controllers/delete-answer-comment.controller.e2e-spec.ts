@@ -43,15 +43,15 @@ describe('Delete answer (E2E)', () => {
   })
 
   test('[DELETE] /answers/comments/:id', async () => {
-    const user = await studentFactory.makePrismaStudent()
-    const question = await questionFactory.makePrismaQuestion({
+    const user = await studentFactory.make()
+    const question = await questionFactory.make({
       authorId: user.id,
     })
-    const answer = await answerFactory.makePrismaAnswer({
+    const answer = await answerFactory.make({
       authorId: user.id,
       questionId: question.id,
     })
-    const comment = await answerCommentFactory.makePrismaAnswerComment({
+    const comment = await answerCommentFactory.make({
       authorId: user.id,
       answerId: answer.id,
     })

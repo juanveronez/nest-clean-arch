@@ -16,14 +16,32 @@ export class InMemoryQuestionsRepository implements QuestionsRepository {
 
   async create(question: Question): Promise<void> {
     this.items.push(question)
+
+    await this.questionAttachmentsRepository.createMany(
+      question.attachments.getItems(),
+    )
+
     DomainEvents.dispatchEventsForAggregate(question.id)
   }
 
   /**
-   * In memory repositories the entities are stored by reference.
+   *   In memory repositories the entities are stored by reference.
    * So, when we update the entity properties, it is already updated in the repository.
+   *
+   *   And we use the questionAttachmentsRepository easily to alter attachments because it's
+   * an watched list, an data structure used to simplify the oparations when altering an entity
+   * in this case it isn't only an Watched list, but an Aggregated too, it mean that this watched
+   * list is linked with an main entity Aggregator.
    */
   async save(question: Question): Promise<void> {
+    await this.questionAttachmentsRepository.createMany(
+      question.attachments.getNewItems(),
+    )
+
+    await this.questionAttachmentsRepository.deleteMany(
+      question.attachments.getRemovedItems(),
+    )
+
     DomainEvents.dispatchEventsForAggregate(question.id)
   }
 

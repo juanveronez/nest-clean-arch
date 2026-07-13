@@ -96,4 +96,39 @@ describe('Edit Question', () => {
       slug: { value: 'updated-question' },
     })
   })
+
+  it('should sync created and removed attachments when edditing a question', async () => {
+    const newQuestion = makeQuestion(
+      { authorId: new UniqueEntityId('author') },
+      new UniqueEntityId('question'),
+    )
+
+    questionsRepository.create(newQuestion)
+
+    questionAttachmentsRepository.items.push(
+      makeQuestionAttachment({
+        questionId: newQuestion.id,
+        attachmentId: new UniqueEntityId('1'),
+      }),
+      makeQuestionAttachment({
+        questionId: newQuestion.id,
+        attachmentId: new UniqueEntityId('2'),
+      }),
+    )
+
+    const result = await sut.execute({
+      questionId: 'question',
+      authorId: 'author',
+      title: 'Updated Question',
+      content: 'This is the updated content of the question.',
+      attachmentsIds: ['1', '3'],
+    })
+
+    expect(result.isRight()).toBeTruthy()
+    expect(questionAttachmentsRepository.items).toHaveLength(2)
+    expect(questionAttachmentsRepository.items).toEqual([
+      expect.objectContaining({ attachmentId: new UniqueEntityId('1') }),
+      expect.objectContaining({ attachmentId: new UniqueEntityId('3') }),
+    ])
+  })
 })

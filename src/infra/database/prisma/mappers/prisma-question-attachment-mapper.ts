@@ -21,7 +21,7 @@ export class PrismaQuestionAttachmentMapper {
   static toPersistenceUpdateMany(
     attachments: QuestionAttachment[],
   ): Prisma.AttachmentUpdateManyArgs {
-    const attachmentIds = attachments.map((att) => att.id.toString())
+    const attachmentIds = attachments.map((att) => att.attachmentId.toString())
 
     return {
       where: { id: { in: attachmentIds } },

@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common'
 import { PaginationParams } from '@/core/repositories/pagination-params'
+import { QuestionAttachmentsRepository } from '@/domain/forum/application/repository/question-attachments-repository'
 import { QuestionsRepository } from '@/domain/forum/application/repository/questions-repository'
 import { Question } from '@/domain/forum/enterprice/entities/question'
 import { PrismaQuestionMapper } from '../mappers/prisma-question-mapper'
 import { PrismaService } from '../prisma.service'
-import { PrismaQuestionAttachmentsRepository } from './prisma-question-attachments-repository'
 
 @Injectable()
 export class PrismaQuestionsRepository implements QuestionsRepository {
   constructor(
     private prisma: PrismaService,
-    private questionAttachmentsRepository: PrismaQuestionAttachmentsRepository,
+    private questionAttachmentsRepository: QuestionAttachmentsRepository,
   ) {}
 
   async create(question: Question): Promise<void> {

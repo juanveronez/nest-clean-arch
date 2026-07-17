@@ -1,8 +1,11 @@
+import { Injectable } from '@nestjs/common'
 import { UniqueEntityId } from '@/core/entities/value-objects/unique-entity-id'
 import {
   QuestionAttachment,
   QuestionAttachmentProps,
 } from '@/domain/forum/enterprice/entities/question-attachment'
+import { PrismaQuestionAttachmentMapper } from '@/infra/database/prisma/mappers/prisma-question-attachment-mapper'
+import { PrismaService } from '@/infra/database/prisma/prisma.service'
 
 /**
  * Use Factory Pattern to create a question object.
@@ -24,4 +27,21 @@ export function makeQuestionAttachment(
     },
     id,
   )
+}
+
+@Injectable()
+export class QuestionAttachmentFactory {
+  constructor(private prisma: PrismaService) {}
+
+  async make(
+    data: Partial<QuestionAttachmentProps> = {},
+  ): Promise<QuestionAttachment> {
+    const questionAttachment = makeQuestionAttachment(data)
+
+    await this.prisma.attachment.update(
+      PrismaQuestionAttachmentMapper.toPersistenceUpdate(questionAttachment),
+    )
+
+    return questionAttachment
+  }
 }

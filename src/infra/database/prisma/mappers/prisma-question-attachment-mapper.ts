@@ -28,4 +28,15 @@ export class PrismaQuestionAttachmentMapper {
       data: { questionId: attachments[0].questionId.toString() },
     }
   }
+
+  static toPersistenceUpdate(
+    attachment: QuestionAttachment,
+  ): Prisma.AttachmentUpdateArgs {
+    const attachmentId = attachment.attachmentId.toString()
+
+    return {
+      where: { id: attachmentId },
+      data: { questionId: attachment.questionId.toString() },
+    }
+  }
 }

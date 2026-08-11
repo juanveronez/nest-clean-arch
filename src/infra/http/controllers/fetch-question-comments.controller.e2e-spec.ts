@@ -32,7 +32,7 @@ describe('Fetch question answers (E2E)', () => {
   })
 
   test('[GET] /questions/:questionId/answers', async () => {
-    const user = await studentFactory.make()
+    const user = await studentFactory.make({ name: 'John' })
     const question = await questionFactory.make({
       authorId: user.id,
     })
@@ -61,26 +61,86 @@ describe('Fetch question answers (E2E)', () => {
     expect(response.body.comments).toHaveLength(20)
     expect(response.body).toEqual({
       comments: [
-        expect.objectContaining({ content: 'comment 0' }),
-        expect.objectContaining({ content: 'comment 1' }),
-        expect.objectContaining({ content: 'comment 2' }),
-        expect.objectContaining({ content: 'comment 3' }),
-        expect.objectContaining({ content: 'comment 4' }),
-        expect.objectContaining({ content: 'comment 5' }),
-        expect.objectContaining({ content: 'comment 6' }),
-        expect.objectContaining({ content: 'comment 7' }),
-        expect.objectContaining({ content: 'comment 8' }),
-        expect.objectContaining({ content: 'comment 9' }),
-        expect.objectContaining({ content: 'comment 10' }),
-        expect.objectContaining({ content: 'comment 11' }),
-        expect.objectContaining({ content: 'comment 12' }),
-        expect.objectContaining({ content: 'comment 13' }),
-        expect.objectContaining({ content: 'comment 14' }),
-        expect.objectContaining({ content: 'comment 15' }),
-        expect.objectContaining({ content: 'comment 16' }),
-        expect.objectContaining({ content: 'comment 17' }),
-        expect.objectContaining({ content: 'comment 18' }),
-        expect.objectContaining({ content: 'comment 19' }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 0',
+        }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 1',
+        }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 2',
+        }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 3',
+        }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 4',
+        }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 5',
+        }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 6',
+        }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 7',
+        }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 8',
+        }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 9',
+        }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 10',
+        }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 11',
+        }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 12',
+        }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 13',
+        }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 14',
+        }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 15',
+        }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 16',
+        }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 17',
+        }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 18',
+        }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 19',
+        }),
       ],
     })
 
@@ -94,16 +154,46 @@ describe('Fetch question answers (E2E)', () => {
     expect(response.body.comments).toHaveLength(10)
     expect(response.body).toEqual({
       comments: [
-        expect.objectContaining({ content: 'comment 20' }),
-        expect.objectContaining({ content: 'comment 21' }),
-        expect.objectContaining({ content: 'comment 22' }),
-        expect.objectContaining({ content: 'comment 23' }),
-        expect.objectContaining({ content: 'comment 24' }),
-        expect.objectContaining({ content: 'comment 25' }),
-        expect.objectContaining({ content: 'comment 26' }),
-        expect.objectContaining({ content: 'comment 27' }),
-        expect.objectContaining({ content: 'comment 28' }),
-        expect.objectContaining({ content: 'comment 29' }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 20',
+        }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 21',
+        }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 22',
+        }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 23',
+        }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 24',
+        }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 25',
+        }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 26',
+        }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 27',
+        }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 28',
+        }),
+        expect.objectContaining({
+          author: expect.objectContaining({ name: 'John' }),
+          content: 'comment 29',
+        }),
       ],
     })
 

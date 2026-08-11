@@ -8,7 +8,7 @@ import {
 import z from 'zod'
 import { FetchAnswerCommentsUseCase } from '@/domain/forum/application/use-cases/fetch-answer-comments'
 import { ZodValidationPipe } from '../pipes/zod-validation.pipe'
-import { AnswerCommentPresenter } from '../presenters/answer-comment-presenter'
+import { CommentWithAuthorPresenter } from '../presenters/comment-with-author-presenter'
 
 const pageQueryParamSchema = z.coerce
   .number()
@@ -38,10 +38,10 @@ export class FetchAnswerCommentsController {
       throw new BadRequestException()
     }
 
-    const { answerComments } = result.value
+    const { comments } = result.value
 
     return {
-      comments: answerComments.map(AnswerCommentPresenter.toHTTP),
+      comments: comments.map(CommentWithAuthorPresenter.toHTTP),
     }
   }
 }

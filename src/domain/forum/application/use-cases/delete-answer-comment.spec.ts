@@ -2,14 +2,19 @@ import { UniqueEntityId } from '@/core/entities/value-objects/unique-entity-id'
 import { NotAllowedError } from '@/core/errors/not-allowed-error'
 import { makeAnswerComment } from '@/test/factories/make-answer-comment'
 import { InMemoryAnswerCommentsRepository } from '@/test/repositories/in-memory-answer-comments-repository'
+import { InMemoryStudentsRepository } from '@/test/repositories/in-memory-students-repository'
 import { DeleteAnswerCommentUseCase } from './delete-answer-comment'
 
 describe('Delete Answer Comment', () => {
   let answerCommentsRepository: InMemoryAnswerCommentsRepository
+  let studentsRepository: InMemoryStudentsRepository
   let sut: DeleteAnswerCommentUseCase
 
   beforeEach(() => {
-    answerCommentsRepository = new InMemoryAnswerCommentsRepository()
+    studentsRepository = new InMemoryStudentsRepository()
+    answerCommentsRepository = new InMemoryAnswerCommentsRepository(
+      studentsRepository,
+    )
     sut = new DeleteAnswerCommentUseCase(answerCommentsRepository)
   })
 

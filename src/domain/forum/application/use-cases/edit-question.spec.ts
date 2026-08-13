@@ -2,19 +2,27 @@ import { UniqueEntityId } from '@/core/entities/value-objects/unique-entity-id'
 import { NotAllowedError } from '@/core/errors/not-allowed-error'
 import { makeQuestion } from '@/test/factories/make-question'
 import { makeQuestionAttachment } from '@/test/factories/make-question-attachment'
+import { InMemoryAttachmentsRepository } from '@/test/repositories/in-memory-attachments-repository'
 import { InMemoryQuestionAttachmentsRepository } from '@/test/repositories/in-memory-question-attachments-repository'
 import { InMemoryQuestionsRepository } from '@/test/repositories/in-memory-questions-repository'
+import { InMemoryStudentsRepository } from '@/test/repositories/in-memory-students-repository'
 import { EditQuestionUseCase } from './edit-question'
 
 describe('Edit Question', () => {
   let questionsRepository: InMemoryQuestionsRepository
   let questionAttachmentsRepository: InMemoryQuestionAttachmentsRepository
+  let attachmentsRepository: InMemoryAttachmentsRepository
+  let studentsRepository: InMemoryStudentsRepository
   let sut: EditQuestionUseCase
 
   beforeEach(() => {
     questionAttachmentsRepository = new InMemoryQuestionAttachmentsRepository()
+    attachmentsRepository = new InMemoryAttachmentsRepository()
+    studentsRepository = new InMemoryStudentsRepository()
     questionsRepository = new InMemoryQuestionsRepository(
       questionAttachmentsRepository,
+      attachmentsRepository,
+      studentsRepository,
     )
     sut = new EditQuestionUseCase(
       questionsRepository,

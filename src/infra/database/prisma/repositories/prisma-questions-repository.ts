@@ -3,6 +3,8 @@ import { PaginationParams } from '@/core/repositories/pagination-params'
 import { QuestionAttachmentsRepository } from '@/domain/forum/application/repository/question-attachments-repository'
 import { QuestionsRepository } from '@/domain/forum/application/repository/questions-repository'
 import { Question } from '@/domain/forum/enterprice/entities/question'
+import { QuestionDetails } from '@/domain/forum/enterprice/entities/value-objects/question-details'
+import { PrismaQuestionDetailsMapper } from '../mappers/prisma-question-details-mapper'
 import { PrismaQuestionMapper } from '../mappers/prisma-question-mapper'
 import { PrismaService } from '../prisma.service'
 
@@ -12,7 +14,6 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
     private prisma: PrismaService,
     private questionAttachmentsRepository: QuestionAttachmentsRepository,
   ) {}
-
   async create(question: Question): Promise<void> {
     const data = PrismaQuestionMapper.toPersistence(question)
 
@@ -51,6 +52,17 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
     if (!question) return null
 
     return PrismaQuestionMapper.toDomain(question)
+  }
+
+  async findDetailsBySlug(slug: string): Promise<QuestionDetails | null> {
+    const question = await this.prisma.question.findUnique({
+      include: { author: true, attachments: true },
+      where: { slug },
+    })
+
+    if (!question) return null
+
+    return PrismaQuestionDetailsMapper.toDomain(question)
   }
 
   async findManyRecent({ page }: PaginationParams): Promise<Question[]> {

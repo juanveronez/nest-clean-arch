@@ -5,22 +5,22 @@ import request from 'supertest'
 import { AppModule } from '@/infra/app.module'
 import { DatabaseModule } from '@/infra/database/database.module'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
-import { AnswerFactory } from '@/test/factories/make-answer'
+import { AttachmentFactory } from '@/test/factories/make-attachment'
 import { QuestionFactory } from '@/test/factories/make-question'
 import { StudentFactory } from '@/test/factories/make-student'
+import { waitFor } from '@/test/utils/wait-for'
 
-describe('Choose question best answer (E2E)', () => {
+describe('On answer created (E2E)', () => {
   let app: INestApplication
   let prisma: PrismaService
   let jwt: JwtService
   let studentFactory: StudentFactory
   let questionFactory: QuestionFactory
-  let answerFactory: AnswerFactory
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [StudentFactory, QuestionFactory, AnswerFactory],
+      providers: [StudentFactory, QuestionFactory, AttachmentFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()
@@ -29,34 +29,33 @@ describe('Choose question best answer (E2E)', () => {
     jwt = moduleRef.get(JwtService)
     studentFactory = moduleRef.get(StudentFactory)
     questionFactory = moduleRef.get(QuestionFactory)
-    answerFactory = moduleRef.get(AnswerFactory)
 
     await app.init()
   })
 
-  test('[PATCH] /answers/:answerId/choose-as-best', async () => {
+  it('should send a notification when answer is created', async () => {
     const user = await studentFactory.make()
+
     const question = await questionFactory.make({
-      authorId: user.id,
-    })
-    const answer = await answerFactory.make({
-      questionId: question.id,
       authorId: user.id,
     })
 
     const accessToken = jwt.sign({ sub: user.id.toString() })
 
-    const answerId = answer.id.toString()
+    const questionId = question.id.toString()
     const response = await request(app.getHttpServer())
-      .patch(`/answers/${answerId}/choose-as-best`)
+      .post(`/questions/${questionId}/answers`)
       .set('Authorization', `Bearer ${accessToken}`)
-      .send()
+      .send({ content: 'New answer', attachments: [] })
 
-    expect(response.statusCode).toBe(204)
+    expect(response.statusCode).toBe(201)
 
-    const questionOnDatabase = await prisma.question.findUnique({
-      where: { id: question.id.toString() },
+    await waitFor(async () => {
+      const notificationsOnDatabase = await prisma.notification.findFirst({
+        where: { recipientId: user.id.toString() },
+      })
+
+      expect(notificationsOnDatabase).not.toBeNull()
     })
-    expect(questionOnDatabase?.bestAnswerId).toBe(answer.id.toString())
   })
 })

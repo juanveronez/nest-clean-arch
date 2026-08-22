@@ -8,6 +8,7 @@ import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { AnswerFactory } from '@/test/factories/make-answer'
 import { QuestionFactory } from '@/test/factories/make-question'
 import { StudentFactory } from '@/test/factories/make-student'
+import { waitFor } from '@/test/utils/wait-for'
 
 describe('Choose question best answer (E2E)', () => {
   let app: INestApplication
@@ -54,9 +55,12 @@ describe('Choose question best answer (E2E)', () => {
 
     expect(response.statusCode).toBe(204)
 
-    const questionOnDatabase = await prisma.question.findUnique({
-      where: { id: question.id.toString() },
+    await waitFor(async () => {
+      const notificationsOnDatabase = await prisma.notification.findFirst({
+        where: { recipientId: user.id.toString() },
+      })
+
+      expect(notificationsOnDatabase).not.toBeNull()
     })
-    expect(questionOnDatabase?.bestAnswerId).toBe(answer.id.toString())
   })
 })

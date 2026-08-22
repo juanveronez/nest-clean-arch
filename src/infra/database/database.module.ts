@@ -7,6 +7,7 @@ import { QuestionAttachmentsRepository } from '@/domain/forum/application/reposi
 import { QuestionCommentsRepository } from '@/domain/forum/application/repository/question-comments-repository'
 import { QuestionsRepository } from '@/domain/forum/application/repository/questions-repository'
 import { StudentsRepository } from '@/domain/forum/application/repository/students-repository'
+import { NotificationsRepository } from '@/domain/notification/application/repositories/notifications-repository'
 import { EnvService } from '../env/env.service'
 import { PrismaService } from './prisma/prisma.service'
 import { PrismaAnswerAttachmentsRepository } from './prisma/repositories/prisma-answer-attachments-repository'
@@ -36,7 +37,10 @@ import { PrismaStudentsRepository } from './prisma/repositories/prisma-students-
       useClass: PrismaAnswerCommentsRepository,
     },
     { provide: AnswersRepository, useClass: PrismaAnswersRepository },
-    PrismaNotificationsRepository,
+    {
+      provide: NotificationsRepository,
+      useClass: PrismaNotificationsRepository,
+    },
     {
       provide: QuestionAttachmentsRepository,
       useClass: PrismaQuestionAttachmentsRepository,
@@ -54,7 +58,7 @@ import { PrismaStudentsRepository } from './prisma/repositories/prisma-students-
     AnswerAttachmentsRepository,
     AnswerCommentsRepository,
     AnswersRepository,
-    PrismaNotificationsRepository,
+    NotificationsRepository,
     QuestionAttachmentsRepository,
     QuestionCommentsRepository,
     QuestionsRepository,

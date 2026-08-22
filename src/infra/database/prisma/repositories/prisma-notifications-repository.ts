@@ -1,16 +1,28 @@
 import { Injectable } from '@nestjs/common'
 import { NotificationsRepository } from '@/domain/notification/application/repositories/notifications-repository'
 import { Notification } from '@/domain/notification/enterprise/entities/notification'
+import { PrismaNotificationMapper } from '../mappers/prisma-notification-mapper'
+import { PrismaService } from '../prisma.service'
 
 @Injectable()
 export class PrismaNotificationsRepository implements NotificationsRepository {
-  create(notification: Notification): Promise<void> {
-    throw new Error('Method not implemented.')
+  constructor(private prisma: PrismaService) {}
+
+  async create(notification: Notification): Promise<void> {
+    const data = PrismaNotificationMapper.toPersistence(notification)
+    await this.prisma.notification.create({ data })
   }
-  findById(id: string): Promise<Notification | null> {
-    throw new Error('Method not implemented.')
+  async findById(id: string): Promise<Notification | null> {
+    const data = await this.prisma.notification.findFirst({
+      where: { id },
+    })
+
+    if (!data) return null
+
+    return PrismaNotificationMapper.toDomain(data)
   }
-  save(notification: Notification): Promise<void> {
-    throw new Error('Method not implemented.')
+  async save(notification: Notification): Promise<void> {
+    const data = PrismaNotificationMapper.toPersistence(notification)
+    await this.prisma.notification.update({ where: { id: data.id }, data })
   }
 }

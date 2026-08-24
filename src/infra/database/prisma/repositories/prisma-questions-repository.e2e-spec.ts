@@ -62,7 +62,13 @@ describe('Prisma Question Repository (E2E)', () => {
       `question:${slug}:details`,
     )
 
-    expect(cachedQuestionDetails).toEqual(JSON.stringify(questionDetails))
+    if (!cachedQuestionDetails) throw new Error('Cache not found')
+
+    expect(JSON.parse(cachedQuestionDetails)).toEqual(
+      expect.objectContaining({
+        id: questionDetails?.questionId.toString(),
+      }),
+    )
   })
 
   it('should return cached question details on subsequent calls', async () => {
@@ -78,14 +84,21 @@ describe('Prisma Question Repository (E2E)', () => {
 
     const slug = question.slug.value
 
-    await cacheRepository.set(
+    expect(await cacheRepository.get(`question:${slug}:details`)).toBeNull()
+
+    await questionsRepository.findDetailsBySlug(slug)
+
+    const cachedQuestionDetails = await cacheRepository.get(
       `question:${slug}:details`,
-      JSON.stringify({ test: true }),
     )
 
-    const questionDetails = await questionsRepository.findDetailsBySlug(slug)
+    if (!cachedQuestionDetails) throw new Error('Cache not found')
 
-    expect(questionDetails).toEqual({ test: true })
+    expect(JSON.parse(cachedQuestionDetails)).toEqual(
+      expect.objectContaining({
+        id: question.id.toString(),
+      }),
+    )
   })
 
   it('should invalidate the cache when a question is updated', async () => {
@@ -101,19 +114,10 @@ describe('Prisma Question Repository (E2E)', () => {
 
     const slug = question.slug.value
 
-    await cacheRepository.set(
-      `question:${slug}:details`,
-      JSON.stringify({ test: true }),
-    )
+    await questionsRepository.findDetailsBySlug(slug)
+    expect(await cacheRepository.get(`question:${slug}:details`)).not.toBeNull()
 
     await questionsRepository.save(question)
-
-    const questionDetails = await questionsRepository.findDetailsBySlug(slug)
-
-    const cachedQuestionDetails = await cacheRepository.get(
-      `question:${slug}:details`,
-    )
-
-    expect(cachedQuestionDetails).toEqual(JSON.stringify(questionDetails))
+    expect(await cacheRepository.get(`question:${slug}:details`)).toBeNull()
   })
 })

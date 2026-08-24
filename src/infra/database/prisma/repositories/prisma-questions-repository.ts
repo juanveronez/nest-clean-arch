@@ -65,7 +65,8 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
 
   async findDetailsBySlug(slug: string): Promise<QuestionDetails | null> {
     const cacheHit = await this.cache.get(`question:${slug}:details`)
-    if (cacheHit) return JSON.parse(cacheHit)
+    if (cacheHit)
+      return PrismaQuestionDetailsMapper.toDomain(JSON.parse(cacheHit))
 
     const question = await this.prisma.question.findUnique({
       include: { author: true, attachments: true },
@@ -74,14 +75,9 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
 
     if (!question) return null
 
-    const questionDetails = PrismaQuestionDetailsMapper.toDomain(question)
+    await this.cache.set(`question:${slug}:details`, JSON.stringify(question))
 
-    await this.cache.set(
-      `question:${slug}:details`,
-      JSON.stringify(questionDetails),
-    )
-
-    return questionDetails
+    return PrismaQuestionDetailsMapper.toDomain(question)
   }
 
   async findManyRecent({ page }: PaginationParams): Promise<Question[]> {

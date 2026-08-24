@@ -7,3 +7,11 @@ services:
       - $POSTGRES_PORT:5432
     volumes:
       - ./data/pg:$PGDATA
+  nest-clean-redis:
+    container_name: nest-clean-redis
+    image: redis
+    env_file: .env
+    ports:
+      - $REDIS_PORT:6379
+    volumes:
+      - ./data/redis:/data
